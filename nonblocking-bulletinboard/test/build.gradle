@@ -1,0 +1,17 @@
+
+
+apply plugin: 'scala'
+
+jar {
+	baseName = 'bl-processor'
+	version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+
+
+	compile('org.apache.kafka:kafka_2.11:0.9.0.1')
+	compile('org.apache.kafka:kafka-clients:0.9.0.1')
+
+    //compile('org.json4s:json4s-jackson_2.11:3.2.11')
+}

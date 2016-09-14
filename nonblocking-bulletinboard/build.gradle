@@ -1,0 +1,15 @@
+
+subprojects {
+    group = 'org.gradle.sample'
+    version = '1.0'
+    
+
+    repositories {
+		mavenCentral()
+    }
+
+    // sourceCompatibility = 1.8
+    // targetCompatibility = 1.8
+
+}
+
