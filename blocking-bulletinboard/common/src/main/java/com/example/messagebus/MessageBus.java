@@ -59,6 +59,7 @@ public class MessageBus {
             throw new RuntimeException(e);
         }
     }
+
     /**
      *
      * @param event

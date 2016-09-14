@@ -10,6 +10,7 @@ import org.apache.spark.streaming.kafka.KafkaUtils
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
+import scala.util.Try
 import scala.util.control.NonFatal
 
 /**
@@ -51,7 +52,7 @@ abstract class CmdProcessor {
         val cmdId = (ast \ "id").extract[String]
 
         // dispatch command to corresponding handler
-        try {
+        Try {
           baseCmd match {
             case AddBulletin.TYPE =>
               val cmd = ast.extract[AddBulletin]
@@ -59,10 +60,18 @@ abstract class CmdProcessor {
 
               localHandler()(cmd)
           }
-          messageBus().send(new CmdCompleted(cmdId, true, null))
-        }
-        catch {
-          case NonFatal(ex) => messageBus().send(new CmdCompleted(cmdId, false, ex.getMessage))
+
+          CmdCompleted.builder()
+            .id(cmdId)
+            .succeeded(true)
+            .build()
+
+        }.recover {
+          case NonFatal(ex) => new CmdCompleted(cmdId, false, ex.getMessage)
+
+        }.foreach { event =>
+          messageBus().send(event)
+
         }
       }
     }
