@@ -1,0 +1,41 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.0.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+jar {
+	baseName = 'facade'
+	version = '0.0.1-SNAPSHOT'
+}
+
+
+dependencies {
+
+	compile project(":common")
+
+    compile ('org.projectlombok:lombok:1.16.10')
+
+	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+
+	compile('org.springframework.boot:spring-boot-starter-web')
+
+    compile('org.springframework:spring-messaging:4.2.6.RELEASE') { force = true }
+	// test dependencies
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Brixton.SR5"
+	}
+}
