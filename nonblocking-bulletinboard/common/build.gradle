@@ -1,0 +1,23 @@
+
+
+apply plugin: 'java'
+
+jar {
+	baseName = 'facade'
+	version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+
+	compile ('org.projectlombok:lombok:1.16.10')
+
+    compile('org.springframework.kafka:spring-kafka:1.0.3.RELEASE')
+    compile('org.springframework:spring-messaging:4.3.2.RELEASE')
+    compile('org.springframework:spring-core:4.3.2.RELEASE')
+
+    compile('com.fasterxml.jackson.core:jackson-core:2.8.1')
+    compile('com.fasterxml.jackson.core:jackson-databind:2.8.1')
+    compile('com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.8.1')
+
+
+}
