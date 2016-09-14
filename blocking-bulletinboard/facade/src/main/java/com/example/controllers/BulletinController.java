@@ -6,8 +6,6 @@ import com.example.messagebus.MessageBus;
 import com.example.viewmodels.bulletin.Bulletin;
 import com.example.viewmodels.bulletin.BulletinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,9 +42,12 @@ public class BulletinController {
             final String cmdId,
             final CmdCompleted cmdCompleted,
             final DeferredResult<Bulletin> deferredResult) {
+
         if(cmdCompleted.getSucceeded()) {
+
             deferredResult.setResult(repo.findOne(cmdId));
         } else {
+
             deferredResult.setErrorResult(new RuntimeException(cmdCompleted.getErrorMessage()));
         }
 
