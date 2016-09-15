@@ -1,7 +1,7 @@
 # spark-enterprise-example
 
 
-Example project to demostrate how Spark can serve to enterprize services. 
+Example project to demostrate how Spark can help to develop enterprize services. 
 
 The project consists of two versions: respecting command completion and without it.
 Both versions follow to CQRS approach however with some limitation:
