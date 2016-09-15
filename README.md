@@ -9,9 +9,9 @@ Both versions follow to CQRS approach however with some limitation:
  * Repositories do not fire domain events
 
 Project uses:
- * Spring Boot/MVC for Facade application (just REST enpoints and read models)
- * Kafka for data integration - delivering commands and events.
- * Spark Streaming for command processing. All business logic lives on this side. 
+ * Read model: Spring Boot/MVC for Facade application (just REST enpoints and read models)
+ * Kafka for data integration (delivering commands and events).
+ * Write model: Spark Streaming for command processing. All business logic lives on this side. 
 
 The application itself is simple bulletin board with just two basic operations 
  * add bulletin 
