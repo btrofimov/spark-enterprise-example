@@ -62,14 +62,14 @@ public class MessageBus {
 
     /**
      *
-     * @param event
+     * @param cmd
      * @param callback
      * @param <T>
      */
-    public <T extends AbstractCommand<T>> void send(final T event, final Consumer<CmdCompleted> callback) {
+    public <T extends AbstractCommand<T>> void send(final T cmd, final Consumer<CmdCompleted> callback) {
         try {
-            responses.put(event.getId(), callback);
-            producer.send(commandsTopic, mapper.writeValueAsString(event));
+            responses.put(cmd.getId(), callback);
+            producer.send(commandsTopic, mapper.writeValueAsString(cmd));
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

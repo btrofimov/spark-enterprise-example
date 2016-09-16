@@ -13,8 +13,6 @@ public abstract class AbstractCommand <T extends AbstractCommand> {
     @Getter
     private String id;
 
-    // Instant eventTime;
-
     abstract public String getType();
 
     public AbstractCommand(String id) {
