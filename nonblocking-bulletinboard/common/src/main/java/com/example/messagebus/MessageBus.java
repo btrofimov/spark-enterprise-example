@@ -20,7 +20,7 @@ public class MessageBus {
     @Value("${kafka.events-topic}")
     protected String eventsTopic;
 
-    ObjectMapper mapper = new ObjectMapper(); //.registerModule(new Jdk8Module());
+    ObjectMapper mapper = new ObjectMapper();
 
     /**
      *

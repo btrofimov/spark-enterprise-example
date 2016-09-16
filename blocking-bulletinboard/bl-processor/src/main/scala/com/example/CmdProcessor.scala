@@ -60,7 +60,6 @@ abstract class CmdProcessor {
 
               localHandler()(cmd)
           }
-
           CmdCompleted.builder()
             .id(cmdId)
             .succeeded(true)

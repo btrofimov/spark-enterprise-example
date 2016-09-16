@@ -17,7 +17,15 @@ abstract class CmdProcessor {
 
   val params: Map[String, String]
 
+
+  /**
+    * The factory is used to use nonseerializable {{AddBulletinHandler}} inside
+    * Spark transformation closures.
+    * By default, Spark requires from all objects to be serializable
+    * @return
+    */
   def addBulletinHandlerFactory: () => AddBulletinHandler
+
 
   /**
     * Synthetic method to catch local variables {{localHandlwer}} and {{messageBus}}
@@ -28,7 +36,7 @@ abstract class CmdProcessor {
       params,
       topics)
 
-    val localHandler = addBulletinHandlerFactory
+    val localAddHandler = addBulletinHandlerFactory
 
     dataStream.foreachRDD { rdd =>
 
@@ -41,15 +49,14 @@ abstract class CmdProcessor {
 
         // take command type and id
         val baseCmd = (ast \ "type").extract[String]
-        val cmdId = (ast \ "id").extract[String]
 
         // dispatch command to corresponding handler
         baseCmd match {
           case AddBulletin.TYPE =>
             val cmd = ast.extract[AddBulletin]
-            cmd.setId(cmdId)
+            cmd.setId(cmd.getId)
 
-            localHandler()(cmd)
+            localAddHandler()(cmd)
         }
       }
     }
