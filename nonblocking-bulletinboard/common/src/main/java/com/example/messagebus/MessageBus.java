@@ -29,7 +29,6 @@ public class MessageBus {
      */
     public <T extends AbstractCommand<T>> void send(final T cmd) {
         try {
-            mapper.writeValueAsString(cmd);
             producer.send(commandsTopic, mapper.writeValueAsString(cmd));
 
         } catch (JsonProcessingException e) {
