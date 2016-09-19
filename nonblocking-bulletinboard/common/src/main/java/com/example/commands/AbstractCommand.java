@@ -1,10 +1,8 @@
 package com.example.commands;
 
-import lombok.*;
-import lombok.experimental.NonFinal;
-import lombok.experimental.Tolerate;
+import lombok.Data;
+import lombok.Getter;
 
-import java.beans.Transient;
 import java.util.UUID;
 
 @Data

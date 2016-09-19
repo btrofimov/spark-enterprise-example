@@ -5,6 +5,7 @@ import com.example.events.AbstractEvent;
 import com.example.events.CmdCompleted;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -26,8 +27,9 @@ public class MessageBus {
     @Value("${kafka.events-topic}")
     protected String eventsTopic;
 
-    ObjectMapper mapper = new ObjectMapper(); //.registerModule(new Jdk8Module());
+    ObjectMapper mapper = new ObjectMapper();
 
+    // Map to keep handlers, that should be called when command has been completed
     ConcurrentHashMap<String, Consumer<CmdCompleted>> responses = new ConcurrentHashMap<>();
 
     /**
@@ -35,14 +37,9 @@ public class MessageBus {
      * @param cmd
      * @param <T>
      */
+    @SneakyThrows
     public <T extends AbstractCommand<T>> void send(final T cmd) {
-        try {
-            mapper.writeValueAsString(cmd);
-            producer.send(commandsTopic, mapper.writeValueAsString(cmd));
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        producer.send(commandsTopic, mapper.writeValueAsString(cmd));
     }
 
     /**
@@ -50,14 +47,9 @@ public class MessageBus {
      * @param event
      * @param <T>
      */
+    @SneakyThrows
     public <T extends AbstractEvent<T>> void send(final T event) {
-        try {
-            mapper.writeValueAsString(event);
-            producer.send(eventsTopic, mapper.writeValueAsString(event));
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        producer.send(eventsTopic, mapper.writeValueAsString(event));
     }
 
     /**
@@ -66,19 +58,16 @@ public class MessageBus {
      * @param callback
      * @param <T>
      */
+    @SneakyThrows
     public <T extends AbstractCommand<T>> void send(final T cmd, final Consumer<CmdCompleted> callback) {
-        try {
-            responses.put(cmd.getId(), callback);
-            producer.send(commandsTopic, mapper.writeValueAsString(cmd));
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        responses.put(cmd.getId(), callback);
+        producer.send(commandsTopic, mapper.writeValueAsString(cmd));
     }
 
     @KafkaListener(topics = "${kafka.events-topic}")
     void listen(CmdCompleted event) {
         String eventId = event.getId();
+
         if(responses.containsKey(eventId)) {
             responses.get(eventId).accept(event);
             responses.remove(eventId);

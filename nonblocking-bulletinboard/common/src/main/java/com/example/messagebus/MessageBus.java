@@ -3,6 +3,7 @@ package com.example.messagebus;
 import com.example.commands.AbstractCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -27,12 +28,8 @@ public class MessageBus {
      * @param cmd
      * @param <T>
      */
+    @SneakyThrows
     public <T extends AbstractCommand<T>> void send(final T cmd) {
-        try {
-            producer.send(commandsTopic, mapper.writeValueAsString(cmd));
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        producer.send(commandsTopic, mapper.writeValueAsString(cmd));
     }
 }
