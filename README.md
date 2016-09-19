@@ -19,6 +19,7 @@ The application itself is simple bulletin board with just two basic operations
 
 ## Build
  * Follow corresponding subproject
+ * [For IDEA] activate option to use annotation processors for current project
  * ./gradlew build
 
 ## Run
