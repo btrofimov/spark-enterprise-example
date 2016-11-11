@@ -36,7 +36,7 @@ object AppContext extends ConfigTrait {
     override lazy val mongoClient = _mongoClient
   }
 
-  lazy val addBulletinHandler = new AddBulletinHandler {
+  lazy val _addBulletinHandler = new AddBulletinHandler {
     override val repository = _repository
   }
 
@@ -49,7 +49,7 @@ object AppContext extends ConfigTrait {
     new KafkaTemplate[String, String](producerFactory)
   }
 
-  lazy val messageBus = new MessageBus {
+  lazy val _messageBus = new MessageBus {
     producer = kafkaProducer
     eventsTopic = _eventsTopic
   }
@@ -59,9 +59,9 @@ object AppContext extends ConfigTrait {
     override lazy val topics = kafkaContext._1
     override lazy val params = kafkaContext._2
 
-    override def addBulletinHandlerFactory = () => AppContext.addBulletinHandler
+    override lazy val addBulletinHandler = _addBulletinHandler
 
-    override def messageBusFactory = () => AppContext.messageBus
+    override lazy val messageBus = _messageBus
   }
 
   def buildNewStreamingContext(): () => StreamingContext = () => {
