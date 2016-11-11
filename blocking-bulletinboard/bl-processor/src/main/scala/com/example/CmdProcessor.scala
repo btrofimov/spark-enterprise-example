@@ -13,7 +13,7 @@ import org.json4s.jackson.JsonMethods._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-/**sn
+/**
   * This class represents Streaming Spark Job
   */
 abstract class CmdProcessor extends Serializable {
