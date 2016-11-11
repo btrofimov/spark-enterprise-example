@@ -11,21 +11,22 @@ import org.json4s.jackson.JsonMethods._
 /**
   *
   */
-abstract class CmdProcessor {
+abstract class CmdProcessor extends Serializable {
 
   val topics: Set[String]
 
   val params: Map[String, String]
 
-
   /**
+    * This hack with ```lazy``` and ```@transient``` allows to load [[addBulletinHandler]]
+    * just one time regardless of running kind (restoring from checkpoints or clean start)
     * The factory is used to use nonseerializable {{AddBulletinHandler}} inside
     * Spark transformation closures.
     * By default, Spark requires from all objects to be serializable
-    * @return
+    *
     */
-  def addBulletinHandlerFactory: () => AddBulletinHandler
-
+  @transient
+  val addBulletinHandler: AddBulletinHandler
 
   /**
     * Synthetic method to catch local variables {{localHandlwer}} and {{messageBus}}
@@ -35,8 +36,6 @@ abstract class CmdProcessor {
       ssc,
       params,
       topics)
-
-    val localAddHandler = addBulletinHandlerFactory
 
     dataStream.foreachRDD { rdd =>
 
@@ -56,7 +55,7 @@ abstract class CmdProcessor {
             val cmd = ast.extract[AddBulletin]
             cmd.setId(cmd.getId)
 
-            localAddHandler()(cmd)
+            addBulletinHandler(cmd)
         }
       }
     }

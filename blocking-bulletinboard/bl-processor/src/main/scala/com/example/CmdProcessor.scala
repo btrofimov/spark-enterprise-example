@@ -13,18 +13,22 @@ import org.json4s.jackson.JsonMethods._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-/**
-  *
+/**sn
+  * This class represents Streaming Spark Job
   */
-abstract class CmdProcessor {
+abstract class CmdProcessor extends Serializable {
 
   val topics: Set[String]
 
   val params: Map[String, String]
 
-  def addBulletinHandlerFactory: () => AddBulletinHandler
+  // this hack with ```lazy``` and ```@transient``` allows to load [[addBulletinHandler]]
+  // just one time regardless of running kind (restoring from checkpoints or clean start)
+  @transient
+  val addBulletinHandler: AddBulletinHandler
 
-  def messageBusFactory: () => MessageBus
+  @transient
+  val messageBus: MessageBus
 
   /**
     * Synthetic method to catch local variables {{localHandlwer}} and {{messageBus}}
@@ -34,9 +38,6 @@ abstract class CmdProcessor {
       ssc,
       params,
       topics)
-
-    val localHandler = addBulletinHandlerFactory
-    val messageBus = messageBusFactory
 
     dataStream.foreachRDD { rdd =>
 
@@ -58,7 +59,7 @@ abstract class CmdProcessor {
               val cmd = ast.extract[AddBulletin]
               cmd.setId(cmdId)
 
-              localHandler()(cmd)
+              addBulletinHandler(cmd)
           }
           CmdCompleted.builder()
             .id(cmdId)
@@ -69,7 +70,7 @@ abstract class CmdProcessor {
           case NonFatal(ex) => new CmdCompleted(cmdId, false, ex.getMessage)
 
         }.foreach { event =>
-          messageBus().send(event)
+          messageBus.send(event)
 
         }
       }
