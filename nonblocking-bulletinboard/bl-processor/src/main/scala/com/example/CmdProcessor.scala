@@ -32,6 +32,7 @@ abstract class CmdProcessor extends Serializable {
     * Synthetic method to catch local variables {{localHandlwer}} and {{messageBus}}
     */
   def runPipeline(ssc: StreamingContext) = {
+
     val dataStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
       ssc,
       params,

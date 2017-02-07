@@ -7,7 +7,7 @@
 .gradle/
 **/build/
 **/classes/
-
+**/checkpoints/
 # Package Files #
 *.jar
 *.war

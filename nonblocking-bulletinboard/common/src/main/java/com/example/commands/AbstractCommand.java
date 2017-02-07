@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Data
-public abstract class AbstractCommand <T extends AbstractCommand> {
+public abstract class AbstractCommand <T extends AbstractCommand<T>> {
 
     @Getter
     private String id;
